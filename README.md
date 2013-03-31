@@ -27,3 +27,16 @@ Challenge 6: Write a script that creates a CDN-enabled container in Cloud Files.
 Challenge 7: Write a script that will create 2 Cloud Servers and add them as nodes to a new Cloud Load Balancer. Worth 3 Points
 
 Challenge 8: Write a script that will create a static webpage served out of Cloud Files. The script must create a new container, cdn enable it, enable it to serve an index file, create an index file object, upload the object to the container, and create a CNAME record pointing to the CDN URL of the container. Worth 3 Points
+
+## Part 3
+
+Challenge 9: Write an application that when passed the arguments FQDN, image, and flavor it creates a server of the specified image and flavor with the same name as the fqdn, and creates a DNS entry for the fqdn pointing to the server's public IP. Worth 2 Points
+
+Challenge 10: Write an application that will:
+- Create 2 servers, supplying a ssh key to be installed at /root/.ssh/authorized_keys.
+- Create a load balancer
+- Add the 2 new servers to the LB
+- Set up LB monitor and custom error page. 
+- Create a DNS record based on a FQDN for the LB VIP. 
+- Write the error page html to a file in cloud files for backup.
+Whew! That one is worth 8 points!
