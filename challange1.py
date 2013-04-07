@@ -1,3 +1,5 @@
+#! python -u 
+
 import os
 import time
 import getopt
@@ -54,12 +56,16 @@ class Challange1:
   is_timeout=False
   max_time=None
   
-  def __init__ (self):
+  def __init__ (self, MAX_SERVERS=None):
     conf = os.path.expanduser("rackspace_cloud_credentials.txt")
     pyrax.set_credential_file(conf, "LON")
     self.cs = pyrax.cloudservers
   
-    self.MAX_SERVERS=3
+    if MAX_SERVERS is not None :
+      self.MAX_SERVERS=MAX_SERVERS
+    else:
+      self.MAX_SERVERS=3
+
     self.servers=[]
     self.servers_build_status=[ 0 for i in self._cs_range() ]
 
@@ -100,11 +106,16 @@ class Challange1:
     else:
       return False
 
+  def is_max_timeout_set(self):
+    if self.max_time is None :
+      return False
+
+    return True
+
   def set_max_timeout(self):
-    if not self.max_time :
-      now=datetime.datetime.now()
-      delta=datetime.timedelta(minutes=self.MAX_TIMEOUT)
-      self.max_time=now + delta
+    now=datetime.datetime.now()
+    delta=datetime.timedelta(minutes=self.MAX_TIMEOUT)
+    self.max_time=now + delta
 
   def check_cs(self):
     """
@@ -174,14 +185,8 @@ class Challange1:
 
       print ("Server #%2d:  ID %37s IP %16s password %s" % (i, s.id, ip, s.adminPass) )
 
-  def run(self):
-    debug("main start")
-    debug("path "+ sys.argv[0])
-
-    log("Building %d cloud server(s)." % self.MAX_SERVERS)
-    self.build_servers()
-
-    log("Waiting for the servers to be built ...")
+  def wait_for_build(self):
+    debug("wait_for_build start")
     
     self.set_max_timeout()
     self.sleep()
@@ -194,6 +199,16 @@ class Challange1:
       else:
         break
 
+  def run(self):
+    debug("main start")
+    debug("path "+ sys.argv[0])
+
+    log("Building %d cloud server(s)." % self.MAX_SERVERS)
+    self.build_servers()
+
+    log("Waiting for the servers to be built ...")
+    self.wait_for_build()
+    
     self.show()
     self.delete_servers()
     
