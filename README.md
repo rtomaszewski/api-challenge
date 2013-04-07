@@ -1,10 +1,13 @@
 # Rackspace API-chalange
 ==========
 
-These are litle example scripts to demonstrate and show what can be done using Openstack cloud API.
+These are litle example scripts to demonstrate and show what can be done using Openstack cloud API. A full list of challenges are available in the forums.
 
-More info can be found here:
 * [Rackspace api-challenge summary] (http://rtomaszewski.blogspot.co.uk/2013/03/rackspace-api-challenge-summary.html)
+* [Week 1] ( https://forums.rackspace.corp/discussion/268/api-challenges-by-support-for-support )
+* [Week 2] ( https://forums.rackspace.corp/discussion/646/week-two-challenges)
+* [Week 3] ( https://forums.rackspace.corp/discussion/671/week-three-challenges)
+ 
 
 ## Part 1
 
@@ -40,3 +43,16 @@ Challenge 10: Write an application that will:
 - Create a DNS record based on a FQDN for the LB VIP. 
 - Write the error page html to a file in cloud files for backup.
 Whew! That one is worth 8 points!
+
+## Part 4
+
+Challenge 11: Write an application that will:
+Create an SSL terminated load balancer (Create self-signed certificate.)
+Create a DNS record that should be pointed to the load balancer.
+Create Three servers as nodes behind the LB.
+- Each server should have a CBS volume attached to it. (Size and type are irrelevant.)
+- All three servers should have a private Cloud Network shared between them.
+- Login information to all three servers returned in a readable format as the result of the script, including connection information.
+Worth 6 points
+
+
