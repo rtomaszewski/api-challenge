@@ -167,12 +167,16 @@ class Challange1:
     for i in self._cs_range() :
       s=self.servers[i]
       debug(str(s.networks))
-      ip=s.networks["public"][0]
+
+      for net in s.networks['public']:
+        if '.' in net : 
+          ip=net
+
       print ("Server #%2d:  ID %37s IP %16s password %s" % (i, s.id, ip, s.adminPass) )
 
   def run(self):
     debug("main start")
-    debug("path sys.argv[0]")
+    debug("path "+ sys.argv[0])
 
     log("Building %d cloud server(s)." % self.MAX_SERVERS)
     self.build_servers()
