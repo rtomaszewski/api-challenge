@@ -47,7 +47,7 @@ class Challange1:
   flavor_512=2
 
   SLEEP_TIME=30 #sec
-  MAX_TIMEOUT=3 #min
+  MAX_TIMEOUT=4 #min
   
   all_built=0
   
@@ -59,7 +59,7 @@ class Challange1:
     pyrax.set_credential_file(conf, "LON")
     self.cs = pyrax.cloudservers
   
-    self.MAX_SERVERS=1
+    self.MAX_SERVERS=3
     self.servers=[]
     self.servers_build_status=[ 0 for i in self._cs_range() ]
 
@@ -163,17 +163,11 @@ class Challange1:
   def show(self):
     debug("show start")
 
-    log ("Cloud server details:") 
+    log ("\nCloud server details:") 
     for i in self._cs_range() :
       s=self.servers[i]
-      print s.networks
       ip=s.networks["public"][0]
-      print ("Server #%2d:  ID %44s IP %10s password %s" % (i, s.id, ip, s.adminPass) )
-    
-    # print "ID:", server.id
-    # print "Status:", server.status
-    # print "Admin password:", server.adminPass
-    # print "Networks:", server.networks
+      print ("Server #%2d:  ID %44s IP %13s password %s" % (i, s.id, ip, s.adminPass) )
 
   def run(self):
     debug("main start")
