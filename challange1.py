@@ -12,7 +12,7 @@ from pprint import pformat
 
 import pyrax
 
-DEBUG = 0
+DEBUG = 1
 PROGRAM_NAME="challange1.py"
 
 def log(message):
@@ -166,6 +166,7 @@ class Challange1:
     log ("Cloud server details:") 
     for i in self._cs_range() :
       s=self.servers[i]
+      debug(str(s.networks))
       ip=s.networks["public"][0]
       print ("Server #%2d:  ID %37s IP %16s password %s" % (i, s.id, ip, s.adminPass) )
 
