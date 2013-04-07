@@ -163,11 +163,11 @@ class Challange1:
   def show(self):
     debug("show start")
 
-    log ("\nCloud server details:") 
+    log ("Cloud server details:") 
     for i in self._cs_range() :
       s=self.servers[i]
       ip=s.networks["public"][0]
-      print ("Server #%2d:  ID %44s IP %13s password %s" % (i, s.id, ip, s.adminPass) )
+      print ("Server #%2d:  ID %37s IP %16s password %s" % (i, s.id, ip, s.adminPass) )
 
   def run(self):
     debug("main start")
@@ -184,7 +184,7 @@ class Challange1:
     while True: 
       self.check_cs()
       if self.is_timeout() == False : 
-         print ".",  #ugly workarond to avoid printing new line 
+         print(".")
          self.sleep()
       else:
         break
