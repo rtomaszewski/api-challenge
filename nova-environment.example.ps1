@@ -1,0 +1,7 @@
+$env:OS_AUTH_SYSTEM="rackspace_uk"
+$env:OS_AUTH_URL="https://lon.identity.api.rackspacecloud.com/v2.0/"
+$env:OS_NO_CACHE="1"
+$env:OS_PASSWORD="1234"
+$env:OS_REGION_NAME="LON"
+$env:OS_TENANT_NAME="user"
+$env:OS_USERNAME="user"
