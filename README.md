@@ -13,7 +13,7 @@ These are litle example scripts to demonstrate and show what can be done using O
 
 * [API Challenges: By Support, for Support] (https://forums.rackspace.corp/discussion/268/api-challenges-by-support-for-support#Item_1)
 
-Challenge 1: Write a script that builds three 512 MB Cloud Servers that following a similar naming convention. (ie., web1, web2, web3) and returns the IP and login credentials for each server. Use any image you want. Worth 1 point
+[Challenge 1] (http://rtomaszewski.blogspot.co.uk/2013/04/challenge-1-script.html): Write a script that builds three 512 MB Cloud Servers that following a similar naming convention. (ie., web1, web2, web3) and returns the IP and login credentials for each server. Use any image you want. Worth 1 point
 
 Challenge 2: Write a script that clones a server (takes an image and deploys the image as a new server). Worth 2 Point
 
