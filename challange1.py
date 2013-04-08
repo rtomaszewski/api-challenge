@@ -69,6 +69,8 @@ class Challange1:
     self.servers=[]
     self.servers_build_status=[ 0 for i in self._cs_range() ]
 
+    self.opt_delete_cs=True
+
   def sleep(self):
     time.sleep(self.SLEEP_TIME)
 
@@ -85,17 +87,18 @@ class Challange1:
     print """
   usage: %s [-h] [-v]
     -h - usage help 
-    -v - verbose/debug output
+    -v - verbose / debug output
+    -d - doesn't delete cloud servers (you should delete them manually otherwise you will be paying for the resources )
     
     args:
       none
       
     example:
-      # run normaly 
+      # create servers, collect details and print them on stdout, at the end delete all created cloud servers
       %s
 
-      # run in debug mode 
-      %s -v
+      # run in debug mode and doesn't delete created cloud servers
+      %s -v -d
         
 """ % (PROGRAM_NAME, PROGRAM_NAME)
 
@@ -127,9 +130,9 @@ class Challange1:
     
     for i in self._cs_range() : 
       if self._check_one_cs(i):
-        self.servers_build_status[i]=1
+        self.current_servers_build_status[i]=1
 
-    if sum(self.servers_build_status) == self.MAX_SERVERS :
+    if sum(self.current_servers_build_status) == self.MAX_SERVERS :
       return True
 
     return False
@@ -145,7 +148,7 @@ class Challange1:
     debug("_check_one_cs start")
     debug("checking %d" % nr)
     
-    s=self.servers[nr]
+    s=self.current_servers[nr]
     snew=self.cs.servers.get(s.id)
     if snew.status == "ACTIVE":
       return True
@@ -161,22 +164,38 @@ class Challange1:
       s = self.cs.servers.create(name, self.ubuntu_1204_id, self.flavor_512)
       self.servers.append(s)
 
-  def delete_servers(self):
-    is_error=False
+  def _delete_servers(self, servers_list):
+    debug("_delete_servers start")
 
     for i in self._cs_range() :
       try:
-        s=self.servers[i]
+        s=servers_list[i]
         s.delete()
       except Exception, e:
         log("ERROR: couldn't delete server id %d and name %s" % (s.id, s.name) )
 
-  def show(self):
-    debug("show start")
+  def delete_servers(self):
+    debug("delete_servers start")
 
-    log ("Cloud server details:") 
+    if self.opt_delete_cs == False:
+      return
+
+    self._delete_servers(self.servers)
+
+  def show(self):
+    self.show_cs()
+
+  def show_cs(self):
+    debug("show_cs start")
+
+    log ("Created test cloud server details:") 
+    self._show(self.servers)
+
+  def _show(self, servers_list):
+    debug("_show start")
+
     for i in self._cs_range() :
-      s=self.servers[i]
+      s=servers_list[i]
       debug(str(s.networks))
 
       for net in s.networks['public']:
@@ -185,7 +204,11 @@ class Challange1:
 
       print ("Server #%2d:  ID %37s IP %16s password %s" % (i, s.id, ip, s.adminPass) )
 
-  def wait_for_build(self):
+  def set_current_build(self, servers_list, servers_list_build_status):
+    self.current_servers=servers_list
+    self.current_servers_build_status=servers_list_build_status
+
+  def wait_for_build(self, ):
     debug("wait_for_build start")
     
     self.set_max_timeout()
@@ -203,10 +226,28 @@ class Challange1:
     debug("main start")
     debug("path "+ sys.argv[0])
 
+    optlist, args = getopt.getopt(sys.argv[1:], 'vh:d:')
+
+    debug("options: " + ', '.join( map(str,optlist) ) ) 
+    debug("arguments: " + ", ".join(args))
+
+    user, key = None, None
+    for o, val in optlist:
+      if o == "-v":
+        global DEBUG 
+        DEBUG = 1
+      elif o == "-h":
+        self.usage()
+        sys.exit()
+      elif o =="-d":
+        log("cloud servers are not going to be deleted after execution")
+        self.opt_delete_cs=False
+
     log("Building %d cloud server(s)." % self.MAX_SERVERS)
     self.build_servers()
 
     log("Waiting for the servers to be built ...")
+    self.set_current_build(self.servers, self.servers_build_status)
     self.wait_for_build()
     
     self.show()
