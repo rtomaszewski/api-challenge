@@ -25,7 +25,7 @@ def debug(message):
     if DEBUG>0:
         log("[debug %2d]" % DEBUG + " " + message)
 
-class Challange1:
+class Challenge1:
   """ 
   Challenge 1: Write a script that builds three 512 MB Cloud Servers that following a similar 
   naming convention. (ie., web1, web2, web3) and returns the IP and login credentials for each 
@@ -49,7 +49,7 @@ class Challange1:
   flavor_512=2
 
   SLEEP_TIME=30 #sec
-  MAX_TIMEOUT=4 #min
+  MAX_TIMEOUT=5 #min
   
   all_built=0
   
@@ -152,6 +152,8 @@ class Challange1:
     snew=self.cs.servers.get(s.id)
     if snew.status == "ACTIVE":
       return True
+      
+    debug("checking %d status %s" % (nr, snew.status))
 
     return False
 
@@ -214,13 +216,16 @@ class Challange1:
     self.set_max_timeout()
     self.sleep()
 
-    while True: 
-      self.check_cs()
+    while self.check_cs() == False :
       if self.is_timeout() == False : 
          print(".")
          self.sleep()
       else:
-        break
+        log("timeout reached, canceling")
+        return False
+
+    return True
+
 
   def run(self):
     debug("main start")
