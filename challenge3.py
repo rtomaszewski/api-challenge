@@ -62,4 +62,4 @@ if __name__ == '__main__':
         # chalange.delete_servers()
         # chalange.delete_cloned_servers()
         # chalange.delete_images()
-        raise e
+        # raise e
