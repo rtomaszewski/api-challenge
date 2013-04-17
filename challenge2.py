@@ -270,8 +270,8 @@ class Challenge2(Challenge1):
         self.show()
 
         self.delete_servers()
-        # self.delete_cloned_servers()
-        # self.delete_images()
+        self.delete_cloned_servers()
+        self.delete_images()
 
 if __name__ == '__main__': 
     # try:
