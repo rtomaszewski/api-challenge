@@ -49,7 +49,7 @@ class Challenge1:
   flavor_512=2
 
   SLEEP_TIME=30 #sec
-  MAX_TIMEOUT=5 #min
+  MAX_TIMEOUT=6 #min
   
   all_built=0
   
@@ -120,24 +120,25 @@ class Challenge1:
     delta=datetime.timedelta(minutes=self.MAX_TIMEOUT)
     self.max_time=now + delta
 
-  def check_cs(self):
+  def check_tasks(self, check_single_task_func):
     """
     return:
       true if all cs are built fine
       false if timeout has been reached or some servers are still in building state
     """
-    debug("check_cs start")
+    debug("check_tasks start")
     
     for i in self._cs_range() : 
-      if self._check_one_cs(i):
-        self.current_servers_build_status[i]=1
+      #if self._check_one_cs(i):
+      if check_single_task_func(i):
+        self.current_items_build_status[i]=1
 
-    if sum(self.current_servers_build_status) == self.MAX_SERVERS :
+    if sum(self.current_items_build_status) == self.MAX_SERVERS :
       return True
 
     return False
 
-  def _check_one_cs(self, nr):
+  def check_one_cs(self, nr):
     """
     checks if a cloud server #nr is built 
     return
@@ -148,13 +149,14 @@ class Challenge1:
     debug("_check_one_cs start")
     debug("checking %d" % nr)
     
-    s=self.current_servers[nr]
+    s=self.current_items[nr]
     snew=self.cs.servers.get(s.id)
+    
+    debug("checking %d status %s" % (nr, snew.status))
+
     if snew.status == "ACTIVE":
       return True
       
-    debug("checking %d status %s" % (nr, snew.status))
-
     return False
 
   def build_servers(self,count=None):
@@ -166,8 +168,13 @@ class Challenge1:
       s = self.cs.servers.create(name, self.ubuntu_1204_id, self.flavor_512)
       self.servers.append(s)
 
-  def _delete_servers(self, servers_list):
-    debug("_delete_servers start")
+  def delete_servers(self, servers_list=None):
+    debug("delete_servers start")
+
+    if self.opt_delete_cs == False:
+      return
+
+    if not servers_list : servers_list=self.servers
 
     for i in self._cs_range() :
       try:
@@ -176,25 +183,14 @@ class Challenge1:
       except Exception, e:
         log("ERROR: couldn't delete server id %d and name %s" % (s.id, s.name) )
 
-  def delete_servers(self):
-    debug("delete_servers start")
-
-    if self.opt_delete_cs == False:
-      return
-
-    self._delete_servers(self.servers)
-
   def show(self):
+    log ("Created cloud server details:") 
     self.show_cs()
 
-  def show_cs(self):
+  def show_cs(self, servers_list=None):
     debug("show_cs start")
 
-    log ("Created test cloud server details:") 
-    self._show(self.servers)
-
-  def _show(self, servers_list):
-    debug("_show start")
+    if not servers_list : servers_list=self.servers
 
     for i in self._cs_range() :
       s=servers_list[i]
@@ -204,28 +200,42 @@ class Challenge1:
         if '.' in net : 
           ip=net
 
-      print ("Server #%2d:  ID %37s IP %16s password %s" % (i, s.id, ip, s.adminPass) )
+      print ("Server #%2d:  ID %37s name %16s IP %16s password %s" % (i, s.id, s.name, ip, s.adminPass) )
 
   def set_current_build(self, servers_list, servers_list_build_status):
-    self.current_servers=servers_list
-    self.current_servers_build_status=servers_list_build_status
+    self.current_items=servers_list
+    self.current_items_build_status=servers_list_build_status
 
-  def wait_for_build(self, ):
-    debug("wait_for_build start")
-    
-    self.set_max_timeout()
-    self.sleep()
+  def _wait_for_tasks(self, check_single_task_func):
+    debug("_wait_for_tasks")
 
-    while self.check_cs() == False :
+    ret=True
+
+    while self.check_tasks(check_single_task_func) == False :
       if self.is_timeout() == False : 
          print(".")
          self.sleep()
       else:
         log("timeout reached, canceling")
-        return False
+        ret=False
+        break
 
-    return True
+    return ret
 
+  def wait_for_build(self ):
+    debug("wait_for_build start")
+
+    start=datetime.datetime.now()
+    self.set_max_timeout()
+    self.sleep()
+
+    ret=self._wait_for_tasks(self.check_one_cs)
+
+    stop=datetime.datetime.now()
+    delta= stop - start
+    debug("waited for %s" % delta)
+    
+    return ret
 
   def run(self):
     debug("main start")
@@ -252,11 +262,11 @@ class Challenge1:
     self.build_servers()
 
     log("Waiting for the servers to be built ...")
-    self.set_current_build(self.servers, self.servers_build_status)
+    self.set_current_build(self.servers, self.servers_build_status)    
     self.wait_for_build()
     
     self.show()
     self.delete_servers()
     
 if __name__ == '__main__': 
-    Challange1().run()
+    Challenge1().run()
