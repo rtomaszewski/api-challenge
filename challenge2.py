@@ -19,7 +19,7 @@ import pyrax
 
 from challenge1 import Challenge1
 
-DEBUG = 1
+DEBUG = 0
 PROGRAM_NAME="challenge2.py"
 
 def log(message):
