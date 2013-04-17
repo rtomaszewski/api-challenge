@@ -4,3 +4,4 @@ tmp
 rackspace_cloud_credentials.txt
 nova-environment.ps1
 nova-environment.sh
+*.pyc
