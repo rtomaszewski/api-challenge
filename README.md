@@ -55,4 +55,15 @@ Create Three servers as nodes behind the LB.
 - Login information to all three servers returned in a readable format as the result of the script, including connection information.
 Worth 6 points
 
+## Part 5
+
+Challenge 12: Write an application that will create a route in mailgun so that when an email is sent to <YourSSO>@apichallenges.mailgun.org it calls your Challenge 1 script that builds 3 servers.
+
+Assumptions: 
+ - Assume that challenge 1 can be kicked off by accessing (http://cldsrvr.com/challenge1).
+You just need to make sure that your message is getting posted to that URL
+ 
+ -Assume the Mailgun API key exists at ~/.mailgunapi. 
+Assume no formatting, the api key will be the only data in the file. 
+
 
