@@ -24,12 +24,19 @@ from novaclient import auth_plugin as _cs_auth_plugin
 _cs_auth_plugin.discover_auth_systems()
 auth_plugin = _cs_auth_plugin.load_plugin("rackspace_uk")
 
-cs = client.Client(os.environ["OS_USERNAME"], os.environ["OS_PASSWORD"], os.environ["OS_TENANT_NAME"], auth_url=os.environ["OS_AUTH_URL"], auth_system="rackspace", region_name="LON",  service_type="compute", auth_plugin=auth_plugin)
+cs = client.Client(os.environ["OS_USERNAME"], 
+                    os.environ["OS_PASSWORD"],
+                    os.environ["OS_TENANT_NAME"],
+                    auth_url=os.environ["OS_AUTH_URL"],
+                    auth_system=os.environ["OS_AUTH_SYSTEM"],
+                    region_name=os.environ["OS_REGION_NAME"],
+                    service_type="compute",
+                    auth_plugin=auth_plugin)
 
 help_str="""
 the novaclient module has been loaded and INITIATED, try typing one of the commands below to see if it works.
 
-#example 1: whow all cloud servers under you cloud account 
+#example 1: show all cloud servers under you cloud account 
 l=cs.servers.list()
 print(l)
 
