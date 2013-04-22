@@ -4,11 +4,15 @@ import os
 import sys
 import time
 import getopt
-import sys
 import json
 import re
-import time
 import datetime
+
+from pprint import pprint
+from pprint import pformat
+
+import pyrax
+import pyrax.exceptions as exc
 
 DEBUG = 0
 
@@ -24,19 +28,32 @@ def debug(message):
 class ChallengeBase:
     """ A base file for the challenge classes """
 
-    def __init__ (self):
+    def __init__ (self, debug):
         self.message=None
-        
+
+        global DEBUG
+        DEBUG=debug
+
+        conf = os.path.expanduser("rackspace_cloud_credentials.txt")
+        pyrax.set_credential_file(conf, "LON")
+        self.cs = pyrax.cloudservers
+        self.cf = pyrax.cloudfiles
+  
     def usage(self, message=None):
+        debug("usage start")
+        
         if message is not None: 
             print message
+        elif self.message is not None :
+            print self.message
+        else:
+            print("usage: not implemented")
 
     def run(self):
-        debug("main start")
+        debug("base run start")
         debug("path "+ sys.argv[0])
 
 
 if __name__ == '__main__': 
-    chalange=ChallengeBase()
-    DEBUG=1
-    chalange.run()
+    challenge=ChallengeBase()
+    challenge.run()
