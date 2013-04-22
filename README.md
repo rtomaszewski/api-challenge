@@ -67,3 +67,14 @@ You just need to make sure that your message is getting posted to that URL
 Assume no formatting, the api key will be the only data in the file. 
 
 
+## Part 6 
+
+Challenge 13: Write an application that nukes everything in your Cloud Account. It should:
+- Delete all Cloud Servers
+- Delete all Custom Images
+- Delete all Cloud Files Containers and Objects
+- Delete all Databases
+- Delete all Networks
+- Delete all CBS Volumes
+Worth 3 points
+
