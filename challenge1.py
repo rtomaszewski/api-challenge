@@ -14,7 +14,7 @@ from pprint import pformat
 
 import pyrax
 
-DEBUG = 1
+DEBUG = 0
 PROGRAM_NAME="challange1.py"
 
 def log(message):
