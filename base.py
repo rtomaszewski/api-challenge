@@ -36,8 +36,12 @@ class ChallengeBase:
 
         conf = os.path.expanduser("rackspace_cloud_credentials.txt")
         pyrax.set_credential_file(conf, "LON")
+        
         self.cs = pyrax.cloudservers
         self.cf = pyrax.cloudfiles
+        self.dns = pyrax.cloud_dns
+        self.cdb = pyrax.cloud_databases
+        self.cbs = pyrax.cloud_blockstorage
   
     def usage(self, message=None):
         debug("usage start")
