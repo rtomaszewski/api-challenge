@@ -37,6 +37,8 @@ class ChallengeBase:
         conf = os.path.expanduser("rackspace_cloud_credentials.txt")
         pyrax.set_credential_file(conf, "LON")
 
+        self.account_name = pyrax.identity.username
+
         self.cs = pyrax.cloudservers
         self.cf = pyrax.cloudfiles
         self.dns = pyrax.cloud_dns
