@@ -19,7 +19,7 @@ import pyrax
 
 from challenge1 import Challenge1
 
-DEBUG = 1
+DEBUG = 0
 PROGRAM_NAME="challenge2.py"
 
 def log(message):
@@ -197,7 +197,7 @@ class Challenge2(Challenge1):
         for i in self._cs_range() :
           try:
             img=self.images[i]
-            self.cs.images.delete(img.id)
+            self.cs.images.delete(img)
           except Exception, e:
             log("ERROR: couldn't delete image file id %d and name %s" % (img.id, img.name) )
 
