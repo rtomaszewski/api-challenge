@@ -30,7 +30,7 @@ class Challenge5(ChallengeBase):
     database, and the database should have at least one user that can connect to it.
     """
 
-    def __init__ (self, debug_level=0, args=None, optlist=None) :
+    def __init__ (self, debug_level=0, args=[], optlist=[]) :
         ChallengeBase.__init__(self, debug_level)
 
         self.message ="""
@@ -95,7 +95,8 @@ class Challenge5(ChallengeBase):
             log("instance name `%s` is too long (max 255 chars) " % self.db_instance_name)
             ret=False
 
-        if ret : self.delete_db_instance(self.db_instance_name)
+        if ret : 
+            ret=self.delete_db_instance(self.db_instance_name)
 
         if self.dbs :
             for db in self.dbs :
@@ -135,7 +136,7 @@ class Challenge5(ChallengeBase):
             db=self.cdb.find( name=db_instance_name )
 
             if self.opt_delete_instance :
-                log("Found existing db instace %s, deleting it ..." % db_instance_name)
+                log("Found existing db instance %s, deleting it ..." % db_instance_name)
                 db.delete()
                 time.sleep(5) #ugly hack
             else :
@@ -200,6 +201,7 @@ class Challenge5(ChallengeBase):
 
         log("Waiting for the instance to be built ...")
         self.wait_for_instance_build()
+        log("Instance is created on host %s" % self.db_instance.hostname)
 
         log("Creating databases %s under the instance %s" % (self.dbs, self.db_instance_name) )
         self.create_dbs()
@@ -219,7 +221,7 @@ if __name__ == '__main__':
             debug("arguments: " + ", ".join(args) )
 
         elif o == "-h":
-            Challenge5(DEBUG).usage()
+            Challenge5(debug_level=DEBUG).usage()
             sys.exit()
 
     challenge = Challenge5(debug_level=DEBUG, args=args, optlist=optlist)
