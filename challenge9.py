@@ -53,6 +53,8 @@ class Challenge9(ChallengeBase):
         self.image = None
         self.flavor = None
 
+        (self.fqdn_name, self.image_id, self.flavor_id)  = (None, None, None)
+
         for o, val in optlist:
             if o == "-n":
                 self.fqdn_name = val
@@ -65,6 +67,10 @@ class Challenge9(ChallengeBase):
                 self.image_id = val
             elif o == "-f":
                 self.flavor_id = val
+
+        if not ( self.fqdn_name and self.image_id and self.flavor_id) :
+            self.usage()
+            sys.exit(-1)
 
     def check(self):
         debug("check start")
