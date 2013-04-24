@@ -44,6 +44,7 @@ class ChallengeBase:
         self.dns = pyrax.cloud_dns
         self.cdb = pyrax.cloud_databases
         self.cbs = pyrax.cloud_blockstorage
+        self.clb = pyrax.cloud_loadbalancers
   
     def usage(self, message=None):
         debug("usage start")
@@ -60,15 +61,16 @@ class ChallengeBase:
         debug("path "+ sys.argv[0])
 
 class WaitingForTask:
-    def __init__(self, check_task_func, resources_list ):
+    def __init__(self, check_task_func, resources_list, sleep_time=None, max_timeout=None ):
         self.check_task_func = check_task_func
 
         self.resources_list=resources_list
         self.resources_build_status=[ 0 for i in self.res_range() ]
 
         self.max_time=None
-        self.SLEEP_TIME=30 #sec
-        self.MAX_TIMEOUT=6 #min
+
+        self.SLEEP_TIME = sleep_time if sleep_time else 30  #sec
+        self.MAX_TIMEOUT= max_timeout if max_timeout else 6 #min 
 
     def set_max_timeout(self, minutes=0):
         if not minutes: minutes=self.MAX_TIMEOUT
@@ -137,6 +139,66 @@ class WaitingForTask:
 
         return ret
 
+class CloudServers(ChallengeBase):
+    def __init__(self, count, name_prefix):
+        global DEBUG
+        debug_level=DEBUG
+
+        ChallengeBase.__init__(self, debug_level)
+
+        self.count = count
+        self.name_prefix = name_prefix
+
+        self.servers = []
+
+        self.build_cloud_servers(count)
+
+    def check_cs_build(self, cs_obj):
+        """ returns True when the cloud is built otherwise False """
+        debug("check_cs_build start %s" % cs_obj.name)
+
+        snew=self.cs.servers.get(cs_obj.id)
+        return True if snew.status == "ACTIVE" else False
+
+    def get_image(self):
+        [ image ] = filter ( lambda x : bool(re.match("Ubuntu 10.04.*" , x.name)), self.cs.images.list())
+        return image.id
+
+    def get_flavor(self):
+        [ f512 ] = filter( lambda x : x.ram==512 , self.cs.flavors.list())
+        return f512.id
+
+    def build_cloud_servers(self, count=0):
+        debug("build_cloud_servers start")
+
+        image=self.get_image()
+        flavor=self.get_flavor()
+
+        for i in xrange(0, count) :
+            name= "%s-%d" % (self.name_prefix, i)
+            s = self.cs.servers.create(name, image, flavor)
+            self.servers.append(s)
+
+    def delete_cs(self):
+        debug("delete_cs start")
+
+        for c in self.servers :
+            c.delete()
+
+    def get_servers(self):
+        debug("get_servers start")
+
+        wait = WaitingForTask(self.check_cs_build, self.servers)
+        if wait.wait_for_tasks() == False: 
+            self.delete_cs()
+            return None
+
+        servers=[]
+        for s in self.servers : 
+            servers.append(self.cs.servers.get(s.id))
+
+        return servers
+        
 if __name__ == '__main__': 
-    challenge=ChallengeBase()
+    challenge=ChallengeBase(1)
     challenge.run()
