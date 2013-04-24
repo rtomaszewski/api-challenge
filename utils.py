@@ -10,3 +10,5 @@ def get_ipv4net(net_list):
     for net in net_list:
         if '.' in net : 
             return net
+
+    return None

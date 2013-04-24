@@ -51,7 +51,8 @@ class Challenge4(ChallengeBase):
             self.opt_delete_domain = True
 
         try:
-            self.domain_name = self.args[0]
+            self.domain_record = self.args[0]
+            self.domain_name =  ".".join( self.domain_record.split('.')[1:] )
             self.domain = None
 
             self.ip_str = self.args[1]
@@ -124,7 +125,7 @@ class Challenge4(ChallengeBase):
 
         # Substitute your actual domain name and IP addresses here
         a_rec = {"type": "A",
-                "name": domain_name,
+                "name": self.domain_record,
                 "data": ip_str,
                 "ttl": 6000
                 }

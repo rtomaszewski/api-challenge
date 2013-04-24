@@ -64,7 +64,11 @@ class WaitingForTask:
     def __init__(self, check_task_func, resources_list, sleep_time=None, max_timeout=None ):
         self.check_task_func = check_task_func
 
-        self.resources_list=resources_list
+        if type(resources_list) is not  list :
+            self.resources_list = [resources_list]
+        else:
+            self.resources_list = resources_list
+
         self.resources_build_status=[ 0 for i in self.res_range() ]
 
         self.max_time=None
