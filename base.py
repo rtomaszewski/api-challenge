@@ -144,7 +144,7 @@ class WaitingForTask:
         return ret
 
 class CloudServers(ChallengeBase):
-    def __init__(self, count, name_prefix):
+    def __init__(self, count, name_prefix, image=None, flavor=None, files=None) :
         global DEBUG
         debug_level=DEBUG
 
@@ -154,6 +154,10 @@ class CloudServers(ChallengeBase):
         self.name_prefix = name_prefix
 
         self.servers = []
+
+        self.image = image if image else self.get_image()
+        self.flavor = flavor if flavor else self.get_flavor()
+        self.files = files
 
         self.build_cloud_servers(count)
 
@@ -175,12 +179,13 @@ class CloudServers(ChallengeBase):
     def build_cloud_servers(self, count=0):
         debug("build_cloud_servers start")
 
-        image=self.get_image()
-        flavor=self.get_flavor()
-
         for i in xrange(0, count) :
             name= "%s-%d" % (self.name_prefix, i)
-            s = self.cs.servers.create(name, image, flavor)
+
+            # debug("name %s image %s flavor %s" % (name, self.image, self.flavor) )
+            # pprint(self.files)
+
+            s = self.cs.servers.create(name, self.image, self.flavor, files=self.files)
             self.servers.append(s)
 
     def delete_cs(self):
