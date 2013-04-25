@@ -362,6 +362,19 @@ class Challenge10(ChallengeBase):
         c.store_object(self.error_page_name, self.error_page)
         self.container=c
 
+    def show(self):
+        debug("show start")
+
+        log("-" * 70)
+        log("vip name %s and ip %s" % (self.lb_name, self.vip_address) )
+        
+        for i in xrange(0, self.cs_count) :
+            name= "%s-%d" % (self.server_prefix, i)
+            log("cloud server %s added to pool as %s" % (name, self.nodes[i].address) )
+
+        log("Error page is stored in container %s under name %s" % (self.container_name, self.error_page_name) )
+        log("to check if the config works try to: curl -v http://%s" % self.vip_address)
+
     def run(self):
         debug("run start")
         ChallengeBase.run(self)
@@ -382,7 +395,10 @@ class Challenge10(ChallengeBase):
         log("Building and configuring dns domain ...")
         self.build_dns()
 
+        log("Backuping files to cloud files ...")
+        self.backup_to_cloud_files()
 
+        self.show()
 
 if __name__ == '__main__': 
     optlist, args = getopt.getopt(sys.argv[1:], 'vhdn:s:e:c:i:f:')
