@@ -45,7 +45,8 @@ class ChallengeBase:
         self.cdb = pyrax.cloud_databases
         self.cbs = pyrax.cloud_blockstorage
         self.clb = pyrax.cloud_loadbalancers
-  
+        self.cnw = pyrax.cloud_networks
+
     def usage(self, message=None):
         debug("usage start")
         
@@ -144,7 +145,7 @@ class WaitingForTask:
         return ret
 
 class CloudServers(ChallengeBase):
-    def __init__(self, count, name_prefix, image=None, flavor=None, files=None) :
+    def __init__(self, count, name_prefix, image=None, flavor=None, files=None, nics=None) :
         global DEBUG
         debug_level=DEBUG
 
@@ -158,6 +159,7 @@ class CloudServers(ChallengeBase):
         self.image = image if image else self.get_image()
         self.flavor = flavor if flavor else self.get_flavor()
         self.files = files
+        self.nics=nics
 
         self.build_cloud_servers(count)
 
@@ -185,7 +187,7 @@ class CloudServers(ChallengeBase):
             # debug("name %s image %s flavor %s" % (name, self.image, self.flavor) )
             # pprint(self.files)
 
-            s = self.cs.servers.create(name, self.image, self.flavor, files=self.files)
+            s = self.cs.servers.create(name, self.image, self.flavor, files=self.files, nics=self.nics)
             self.servers.append(s)
 
     def delete_cs(self):
