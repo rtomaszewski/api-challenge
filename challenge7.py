@@ -96,7 +96,9 @@ class Challenge7(ChallengeBase):
         debug("build_lb start")
 
         for s in self.servers :
-            net = utils.get_ipv4net(s.networks["private"])
+            net = [ i["addr"] for i in s.addresses["private"] ] 
+            net = utils.get_ipv4net(net)
+
             node = self.clb.Node(address=net, port=80, condition="ENABLED")
             self.nodes.append(node)
 
