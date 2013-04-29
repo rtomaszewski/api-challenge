@@ -3,7 +3,11 @@
 
 These are litle example scripts to demonstrate and show what can be done using Openstack cloud API. A full list of challenges are available in the forums.
 
+## All the writen scripts has been documented in separate blog posts. The summary of all posts and progress about the challenge can be found here.
 * [Rackspace api-challenge summary] (http://rtomaszewski.blogspot.co.uk/2013/03/rackspace-api-challenge-summary.html)
+
+## Some info about the challenge on forums.
+
 * [Week 1] ( https://forums.rackspace.corp/discussion/268/api-challenges-by-support-for-support )
 * [Week 2] ( https://forums.rackspace.corp/discussion/646/week-two-challenges)
 * [Week 3] ( https://forums.rackspace.corp/discussion/671/week-three-challenges)
